@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deploy Boat — Self-hosted app hosting for indie developers and AI builders</title>
+<meta name="description" content="Turn a $5 VPS into your own Vercel or Heroku. Publish any app with one command, from Git, or by asking your AI agent. Database, storage, HTTPS, backups and a server that looks after itself. Free and open source.">
+<link rel="canonical" href="https://deployboat.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://deployboat.github.io/">
+<meta property="og:title" content="Deploy Boat — It just works.">
+<meta property="og:description" content="Self-hosted app hosting for indie developers and AI builders. Publish with one command, Git, or your AI agent.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 4v18' stroke='%2318181b' stroke-width='2'/><path d='M17 5l9 14h-9z' fill='%232563eb'/><path d='M5 23h22l-4 5H9z' fill='%2318181b'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Deploy Boat","applicationCategory":"DeveloperApplication","operatingSystem":"Ubuntu, Debian","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Self-hosted app hosting for indie developers and AI builders.","url":"https://deployboat.github.io/","codeRepository":"https://github.com/deployboat/deployboat","license":"https://opensource.org/licenses/MIT"}
+</script>
+<style>
+  :root { --bg:#f7f7f5; --card:#fff; --ink:#18181b; --muted:#71717a; --line:#e7e7e4; --accent:#2563eb; --soft:#eef3ff; --ok:#16a34a; --warn:#d97706; --bad:#dc2626; --code:#18181b; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111113; --card:#19191c; --ink:#f4f4f5; --muted:#a1a1aa; --line:#2a2a2e; --accent:#6b9bff; --soft:#1b2440; --code:#0b0b0d; } }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--ink); font:16px/1.6 "Inter",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
+  svg.i { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+  code { font:500 14px ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+  /* top bar */
+  .top { display:flex; align-items:center; justify-content:space-between; padding:18px 0; }
+  .logo { display:flex; align-items:center; gap:9px; font-weight:700; color:var(--ink); font-size:17px; letter-spacing:-0.01em; }
+  .logo:hover { text-decoration:none; }
+  .logo svg { width:26px; height:26px; }
+  .top nav { display:flex; gap:22px; align-items:center; font-size:14.5px; font-weight:500; }
+  .top nav a { color:var(--muted); } .top nav a:hover { color:var(--ink); text-decoration:none; }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:10px; font-weight:600; font-size:15px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-family:inherit; }
+  .btn:hover { text-decoration:none; border-color:var(--ink); }
+  .btn.primary { background:var(--ink); color:var(--card); border-color:var(--ink); }
+  .btn svg.i { width:17px; height:17px; }
+
+  /* hero */
+  .hero { padding:64px 0 40px; display:grid; grid-template-columns:1.1fr 1fr; gap:48px; align-items:center; }
+  .eyebrow { display:inline-flex; gap:8px; align-items:center; font-size:13px; font-weight:500; color:var(--muted); border:1px solid var(--line); background:var(--card); padding:5px 11px; border-radius:99px; }
+  .eyebrow::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--ok); }
+  h1 { font-size:clamp(40px,6.4vw,64px); line-height:1.02; letter-spacing:-0.04em; font-weight:700; margin:18px 0 18px; }
+  h1 span { color:var(--accent); }
+  .lede { font-size:19px; color:var(--muted); max-width:520px; }
+  .cta { display:flex; gap:10px; margin-top:28px; flex-wrap:wrap; }
+
+  .term { background:var(--code); color:#e4e4e7; border-radius:14px; padding:18px 20px; font:13.5px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace; box-shadow:0 20px 50px -20px rgb(0 0 0 / .35); overflow-x:auto; }
+  .term .bar { display:flex; gap:6px; margin-bottom:12px; } .term .bar i { width:10px; height:10px; border-radius:50%; background:#3f3f46; }
+  .term .d { color:#71717a; } .term .g { color:#4ade80; } .term .b { color:#93b4ff; } .term .y { color:#fbbf24; }
+  .term .line { white-space:pre; }
+
+  section { padding:72px 0 8px; scroll-margin-top:20px; }
+  .kicker { font-size:13px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:.06em; }
+  h2 { font-size:clamp(28px,4vw,38px); letter-spacing:-0.025em; line-height:1.15; margin:8px 0 12px; }
+  .sub { color:var(--muted); font-size:17px; max-width:600px; margin-bottom:28px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; }
+
+  /* who */
+  .who { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .who .card { padding:20px; } .who svg.i { color:var(--accent); } .who b { display:block; margin:10px 0 4px; } .who p { font-size:14.5px; color:var(--muted); }
+
+  /* publish tabs */
+  .tabs { display:flex; gap:6px; padding:8px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .tab { display:flex; gap:8px; align-items:center; border:0; background:none; color:var(--muted); font:500 15px Inter,sans-serif; padding:9px 14px; border-radius:9px; cursor:pointer; }
+  .tab.on { background:var(--soft); color:var(--accent); }
+  .pane { display:none; padding:28px; grid-template-columns:1fr 1.15fr; gap:32px; align-items:center; } .pane.on { display:grid; }
+  .pane h3 { font-size:21px; letter-spacing:-0.01em; margin-bottom:8px; }
+  .pane p { color:var(--muted); margin-bottom:14px; }
+  .pane ul { list-style:none; display:grid; gap:8px; font-size:15px; }
+  .pane li { display:flex; gap:10px; } .pane li svg.i { color:var(--ok); width:18px; height:18px; margin-top:3px; }
+
+  /* tools table */
+  .tools { width:100%; border-collapse:collapse; font-size:15px; }
+  .tools td { padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .tools tr:last-child td { border-bottom:0; }
+  .tools td:first-child { width:170px; } .tools code { color:var(--accent); }
+
+  /* features */
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .feat { padding:20px; } .feat svg.i { color:var(--accent); } .feat b { display:block; margin:10px 0 4px; } .feat p { color:var(--muted); font-size:14.5px; }
+  .pill { font-size:11.5px; font-weight:600; color:var(--accent); background:var(--soft); padding:1px 8px; border-radius:99px; margin-left:6px; vertical-align:2px; }
+
+  /* doctor mock */
+  .doctor { display:grid; grid-template-columns:1fr 1.2fr; gap:32px; align-items:center; }
+  .doctor ul { list-style:none; display:grid; gap:10px; }
+  .doctor li { display:flex; gap:10px; } .doctor li svg.i { color:var(--ok); margin-top:2px; }
+  .mock { padding:8px; }
+  .mrow { display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--line); font-size:14.5px; }
+  .mrow:last-child { border-bottom:0; }
+  .mrow .dot { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; color:var(--c); background:color-mix(in srgb,var(--c) 13%,transparent); }
+  .mrow .dot svg.i { width:16px; height:16px; }
+  .mrow span { flex:1; }
+  .mrow button { font:500 13px Inter,sans-serif; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:8px; padding:6px 11px; cursor:pointer; }
+  .mrow button:hover { background:var(--ink); color:var(--card); }
+  .mrow.done { --c:var(--ok) !important; } .mrow.done span { color:var(--muted); }
+
+  /* compare */
+  .compare { width:100%; border-collapse:collapse; font-size:15px; }
+  .compare th, .compare td { padding:13px 16px; border-bottom:1px solid var(--line); text-align:left; }
+  .compare th { font-size:13px; color:var(--muted); font-weight:500; }
+  .compare tr:last-child td { border-bottom:0; }
+  .compare td:nth-child(2) { font-weight:600; }
+
+  /* install */
+  .install { padding:36px; text-align:center; }
+  .cmd { display:flex; align-items:center; gap:10px; max-width:760px; margin:20px auto 12px; background:var(--code); color:#e4e4e7; padding:14px 14px 14px 18px; border-radius:12px; text-align:left; }
+  .cmd code { flex:1; overflow-x:auto; white-space:nowrap; font-size:14px; color:#e4e4e7; }
+  .cmd button { background:#27272a; color:#e4e4e7; border:0; padding:7px 12px; border-radius:8px; font:500 13px Inter,sans-serif; cursor:pointer; }
+  .install .note { color:var(--muted); font-size:14px; }
+
+  /* faq */
+  .faq details { border-bottom:1px solid var(--line); padding:16px 4px; }
+  .faq details:last-child { border-bottom:0; }
+  .faq summary { font-weight:600; cursor:pointer; list-style:none; display:flex; justify-content:space-between; gap:12px; }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary::after { content:"+"; color:var(--muted); font-weight:400; font-size:20px; line-height:1; }
+  .faq details[open] summary::after { content:"–"; }
+  .faq p { color:var(--muted); margin-top:8px; max-width:720px; }
+
+  footer { padding:60px 0 50px; color:var(--muted); font-size:14px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; border-top:1px solid var(--line); margin-top:80px; }
+
+  @media (max-width:860px) {
+    .hero, .pane.on, .doctor { grid-template-columns:1fr; }
+    .who { grid-template-columns:1fr 1fr; } .grid { grid-template-columns:1fr 1fr; }
+    .top nav a:not(.btn) { display:none; }
+    .hero { padding-top:32px; }
+  }
+  @media (max-width:520px) { .who, .grid { grid-template-columns:1fr; } .tools td:first-child { width:auto; } .install { padding:24px 16px; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17v4M17 19h4"/></symbol>
+  <symbol id="term" viewBox="0 0 24 24"><path d="M4 17l6-5-6-5M12 19h8"/></symbol>
+  <symbol id="git" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="9" r="2.5"/><path d="M6 8.5v7M18 11.5c0 4-6 3-10 5"/></symbol>
+  <symbol id="db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <symbol id="folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></symbol>
+  <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></symbol>
+  <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9.7 9.7 0 00-6.7 2.8L3 8M3 3v5h5M12 7v5l3 2"/></symbol>
+  <symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 003.4 0"/></symbol>
+  <symbol id="chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 6-6"/></symbol>
+  <symbol id="rocket" viewBox="0 0 24 24"><path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M9 15l-3-3c1-4 5-8 13-9-1 8-5 12-9 13z"/><circle cx="14.5" cy="9.5" r="1.5"/></symbol>
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/></symbol>
+  <symbol id="coins" viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M15.5 9.5A6 6 0 1114.5 21M9 6v6M7 8h3"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+  <symbol id="alert" viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="disk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 14h18M7 17h.01"/></symbol>
+  <symbol id="github" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 00-.9-2.6c3.1-.4 6.4-1.5 6.4-6.9a5.4 5.4 0 00-1.5-3.7 5 5 0 00-.1-3.7s-1.2-.4-3.9 1.4a13.4 13.4 0 00-7 0C6.3 1.6 5.1 2 5.1 2a5 5 0 00-.1 3.7A5.4 5.4 0 003.5 9.4c0 5.4 3.3 6.5 6.4 6.9A3.4 3.4 0 009 18.9V22"/></symbol>
+</svg>
+
+<header class="wrap top">
+  <a href="#" class="logo">
+    <svg viewBox="0 0 32 32"><path d="M16 4v18" stroke="currentColor" stroke-width="2"/><path d="M17 5l9 14h-9z" fill="var(--accent)"/><path d="M5 23h22l-4 5H9z" fill="currentColor"/></svg>
+    Deploy Boat
+  </a>
+  <nav>
+    <a href="#ai">AI agents</a>
+    <a href="#features">Features</a>
+    <a href="#faq">FAQ</a>
+    <a class="btn" href="https://github.com/deployboat/deployboat"><svg class="i"><use href="#github"/></svg>GitHub</a>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Free &amp; open source · MIT</span>
+      <h1>Your own server.<br><span>It just works.</span></h1>
+      <p class="lede">Self-hosted app hosting for indie developers and AI builders. Publish anything with one command, from Git, or just by telling your AI agent to <i>publish it</i>.</p>
+      <div class="cta">
+        <a class="btn primary" href="#install"><svg class="i"><use href="#rocket"/></svg>Install in one line</a>
+        <a class="btn" href="https://github.com/deployboat/deployboat"><svg class="i"><use href="#github"/></svg>View on GitHub</a>
+      </div>
+    </div>
+    <div class="term" aria-label="Example deploy">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <div class="line"><span class="d">~/my-app</span> $ npx deployboat deploy --with database</div>
+      <div class="line"><span class="d">→ Uploading my-app…</span></div>
+      <div class="line"><span class="d">→ Building</span> (Next.js detected)</div>
+      <div class="line"><span class="d">→ Creating your database…</span></div>
+      <div class="line"><span class="d">→ Starting…</span></div>
+      <div class="line"> </div>
+      <div class="line"><span class="g">✓ Live:</span> <span class="b">https://my-app.95.216.148.189.nip.io</span></div>
+    </div>
+  </div>
+
+  <section id="who">
+    <span class="kicker">Who it's for</span>
+    <h2>One person. Lots of apps. One cheap server.</h2>
+    <p class="sub">If you ship side projects, client sites or things your AI helped you build, and you're tired of paying per app, this is for you.</p>
+    <div class="who">
+      <div class="card"><svg class="i"><use href="#rocket"/></svg><b>Indie hackers</b><p>Ship ten small apps without ten monthly bills.</p></div>
+      <div class="card"><svg class="i"><use href="#sparkle"/></svg><b>AI builders</b><p>Your agent writes the code and puts it online.</p></div>
+      <div class="card"><svg class="i"><use href="#heart"/></svg><b>Non-technical makers</b><p>Rent a server, paste one line, no Linux needed.</p></div>
+      <div class="card"><svg class="i"><use href="#coins"/></svg><b>Cost-aware teams of one</b><p>A $5 server instead of usage-based pricing.</p></div>
+    </div>
+  </section>
+
+  <section id="publish">
+    <span class="kicker">Publish</span>
+    <h2>Three ways to go live. All end with a link.</h2>
+    <p class="sub">No Dockerfile, no YAML, no settings to learn first. Deploy Boat figures out what you built: HTML, React, Vite, Next.js, Node, Python, Go, PHP and more.</p>
+    <div class="card">
+      <div class="tabs" role="tablist">
+        <button class="tab on" data-t="p-ai" role="tab"><svg class="i"><use href="#sparkle"/></svg>Your AI agent</button>
+        <button class="tab" data-t="p-cli" role="tab"><svg class="i"><use href="#term"/></svg>One command</button>
+        <button class="tab" data-t="p-git" role="tab"><svg class="i"><use href="#git"/></svg>Git</button>
+      </div>
+      <div class="pane on" id="p-ai">
+        <div>
+          <h3>Just say “publish it”.</h3>
+          <p>Connect Deploy Boat to Claude Code, Cursor or any MCP-ready agent once. From then on, your agent deploys, reads logs, fixes errors and redeploys on its own.</p>
+          <ul>
+            <li><svg class="i"><use href="#check"/></svg>Works with Claude, Cursor, Windsurf and more</li>
+            <li><svg class="i"><use href="#check"/></svg>Limited agent tokens: they can't delete anything</li>
+          </ul>
+        </div>
+        <div class="term">
+          <div class="line"><span class="d">you:</span> publish it, it needs a database</div>
+          <div class="line"><span class="d">agent:</span> <span class="y">deploy</span>(services: ["database"])</div>
+          <div class="line"><span class="d">agent:</span> build failed, missing start script</div>
+          <div class="line"><span class="d">agent:</span> fixed package.json, <span class="y">deploy</span>()</div>
+          <div class="line"><span class="g">✓ Live:</span> <span class="b">https://shop.1.2.3.4.nip.io</span></div>
+        </div>
+      </div>
+      <div class="pane" id="p-cli">
+        <div>
+          <h3>One command in any folder.</h3>
+          <p>Log in once, then run deploy in any project. Run it again to publish an update. Old versions are kept, so you can roll back with one click.</p>
+          <ul>
+            <li><svg class="i"><use href="#check"/></svg>Add a database or storage only when you need it</li>
+            <li><svg class="i"><use href="#check"/></svg><code>--json</code> output for scripts</li>
+          </ul>
+        </div>
+        <div class="term">
+          <div class="line"><span class="d">$</span> npx deployboat login &lt;dashboard&gt; &lt;token&gt;</div>
+          <div class="line"><span class="d">$</span> npx deployboat deploy</div>
+          <div class="line"><span class="g">✓ Live:</span> <span class="b">https://blog.1.2.3.4.nip.io</span></div>
+          <div class="line"><span class="d">$</span> npx deployboat logs</div>
+          <div class="line"><span class="d">$</span> npx deployboat env set STRIPE_KEY=sk_live_…</div>
+        </div>
+      </div>
+      <div class="pane" id="p-git">
+        <div>
+          <h3>Push to deploy, previews for every PR.</h3>
+          <p>Connect any repo from GitHub, GitLab, Gitea or Bitbucket, public or private. Every push goes live. Every pull request gets its own preview address, deleted when it's merged.</p>
+          <ul>
+            <li><svg class="i"><use href="#check"/></svg>Private repos with read-only deploy keys</li>
+            <li><svg class="i"><use href="#check"/></svg>Previews get their own empty database</li>
+          </ul>
+        </div>
+        <div class="term">
+          <div class="line"><span class="d">$</span> git push origin main</div>
+          <div class="line"><span class="g">✓ Deployed</span> shop <span class="d">(a1b2c3d "New pricing page")</span></div>
+          <div class="line"><span class="d">$</span> gh pr create</div>
+          <div class="line"><span class="g">✓ Preview</span> <span class="b">https://shop-pr-12.1.2.3.4.nip.io</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai">
+    <span class="kicker">For AI agents</span>
+    <h2>Built for the way you build now.</h2>
+    <p class="sub">Deploy Boat ships with an MCP server. Your agent gets real tools instead of guessing shell commands, and a guide that tells it how to build apps that deploy cleanly.</p>
+    <div class="card">
+      <table class="tools">
+        <tr><td><code>deploy</code></td><td>Publish or update the project and get the live URL, or the error and the end of the build log.</td></tr>
+        <tr><td><code>add_service</code></td><td>Give the app a database, file storage or email, only if it needs one.</td></tr>
+        <tr><td><code>get_logs</code></td><td>Read the app's output to debug a crash.</td></tr>
+        <tr><td><code>set_env</code></td><td>Save an API key you gave it, without putting secrets in code.</td></tr>
+        <tr><td><code>app_status</code></td><td>Is it running, where, which version.</td></tr>
+        <tr><td><code>setup_guide</code></td><td>The rules for apps on Deploy Boat: port, database, storage, secrets.</td></tr>
+      </table>
+    </div>
+    <div class="cmd" style="margin-top:16px;max-width:none">
+      <code>claude mcp add deployboat -e DEPLOYBOAT_URL=… -e DEPLOYBOAT_TOKEN=… -- npx -y deployboat mcp</code>
+    </div>
+    <p style="color:var(--muted);font-size:14px">The dashboard fills in the details for you: <b>New app → With my AI agent</b>.</p>
+  </section>
+
+  <section id="features">
+    <span class="kicker">Built in</span>
+    <h2>Everything an app needs. One click each.</h2>
+    <p class="sub">No extra accounts, no extra bills. Nothing runs unless an app asks for it.</p>
+    <div class="grid">
+      <div class="card feat"><svg class="i"><use href="#db"/></svg><b>PostgreSQL database</b><p>Your app gets <code>DATABASE_URL</code>. One database per app.</p></div>
+      <div class="card feat"><svg class="i"><use href="#folder"/></svg><b>File storage</b><p>S3-compatible, with public links for uploads and images.</p></div>
+      <div class="card feat"><svg class="i"><use href="#mail"/></svg><b>Email sending</b><p>Through your provider. Your app gets <code>SMTP_URL</code>.</p></div>
+      <div class="card feat"><svg class="i"><use href="#globe"/></svg><b>Domains &amp; HTTPS</b><p>A free address for every app, or your own domain. Certificates are automatic.</p></div>
+      <div class="card feat"><svg class="i"><use href="#lock"/></svg><b>Private previews</b><p>Password-protect a site, or share a private link and a QR code.</p></div>
+      <div class="card feat"><svg class="i"><use href="#clock"/></svg><b>Cron jobs</b><p>Call a URL or run a command on a schedule. Retries included.</p></div>
+      <div class="card feat"><svg class="i"><use href="#history"/></svg><b>Versions &amp; rollback</b><p>Every deploy is kept. Go back with one click.</p></div>
+      <div class="card feat"><svg class="i"><use href="#chart"/></svg><b>Monitoring</b><p>Uptime checks, response time, CPU and memory history.</p></div>
+      <div class="card feat"><svg class="i"><use href="#save"/></svg><b>Backups</b><p>Nightly, with copies to Google Drive or any S3 storage.</p></div>
+    </div>
+  </section>
+
+  <section id="doctor">
+    <div class="doctor">
+      <div>
+        <span class="kicker">A server that looks after itself</span>
+        <h2>No sysadmin needed.</h2>
+        <p class="sub">Server Doctor checks your server around the clock and explains problems in plain words. Most have a <b>Fix it</b> button that tells you exactly what it will do first.</p>
+        <ul>
+          <li><svg class="i"><use href="#check"/></svg>38 security and health checks, each on its own schedule</li>
+          <li><svg class="i"><use href="#check"/></svg>Firewall, brute-force protection and automatic updates from day one</li>
+          <li><svg class="i"><use href="#check"/></svg>Alerts by email, Discord, Slack or Telegram</li>
+        </ul>
+      </div>
+      <div class="card mock" aria-label="Server Doctor example. Try the buttons.">
+        <div class="mrow" style="--c:var(--bad)"><span class="dot"><svg class="i"><use href="#disk"/></svg></span><span>Disk is 92% full</span><button>Free up space</button></div>
+        <div class="mrow" style="--c:var(--warn)"><span class="dot"><svg class="i"><use href="#alert"/></svg></span><span>SSH allows password login</span><button>Turn off passwords</button></div>
+        <div class="mrow" style="--c:var(--warn)"><span class="dot"><svg class="i"><use href="#save"/></svg></span><span>Backups only on this server</span><button>Add Google Drive</button></div>
+        <div class="mrow done"><span class="dot"><svg class="i"><use href="#check"/></svg></span><span>All HTTPS certificates are valid</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <span class="kicker">Compare</span>
+    <h2>Why not just use a hosted platform?</h2>
+    <p class="sub">They're great, until your fifth side project. Then the bill grows with every app.</p>
+    <div class="card" style="overflow-x:auto">
+      <table class="compare">
+        <tr><th></th><th>Deploy Boat</th><th>Vercel / Heroku / Railway</th></tr>
+        <tr><td>Cost</td><td>One server, unlimited apps</td><td>Per app, per seat, per usage</td></tr>
+        <tr><td>Your data</td><td>On your server</td><td>On theirs</td></tr>
+        <tr><td>Database &amp; storage</td><td>Built in, one click</td><td>Extra services, extra bills</td></tr>
+        <tr><td>AI agent deploys</td><td>Built in (MCP + CLI)</td><td>Varies</td></tr>
+        <tr><td>Setup</td><td>One line on a fresh server</td><td>An account and config per project</td></tr>
+      </table>
+    </div>
+    <p style="color:var(--muted);font-size:15px;margin-top:14px">Compared to Coolify or Dokku: far fewer settings, a dashboard in plain language, an AI-first workflow, and a doctor that fixes things for you.</p>
+  </section>
+
+  <section id="install">
+    <div class="card install">
+      <span class="kicker">Get started</span>
+      <h2>Install in one line.</h2>
+      <p class="sub" style="margin:0 auto">Rent any Ubuntu or Debian server. A $5 VPS is plenty. Then run:</p>
+      <div class="cmd">
+        <code id="installcmd">curl -fsSL https://raw.githubusercontent.com/deployboat/deployboat/main/install.sh | sudo bash</code>
+        <button id="copy">Copy</button>
+      </div>
+      <p class="note">A few minutes later you get your dashboard link. Already secured: firewall, brute-force protection, automatic updates, HTTPS.</p>
+    </div>
+  </section>
+
+  <section id="faq">
+    <span class="kicker">FAQ</span>
+    <h2>Questions</h2>
+    <div class="card faq" style="padding:6px 22px">
+      <details><summary>Do I need to know Docker or Linux?</summary><p>No. Deploy Boat uses Docker under the hood and looks after the server for you. You use a dashboard, one command, or your AI agent.</p></details>
+      <details><summary>Do I need a domain?</summary><p>No. Every app gets a free HTTPS address right away. Add your own domain whenever you want; certificates are automatic.</p></details>
+      <details><summary>What server do I need?</summary><p>Ubuntu 22.04 / 24.04 or Debian 12, with at least 1 GB of memory and 5 GB of free disk. Any cheap VPS from Hetzner, DigitalOcean, Vultr, Linode and others works.</p></details>
+      <details><summary>Is it really free?</summary><p>Yes. It's open source under the MIT license. You only pay for your server.</p></details>
+      <details><summary>Can I host apps my AI wrote?</summary><p>That's exactly what it's for. Connect your agent with MCP, say “publish it”, and it handles the rest, including reading logs and fixing failed builds.</p></details>
+      <details><summary>Is it production-ready?</summary><p>It's early. It runs on real servers today, and it's moving fast. Nightly backups with off-server copies are built in, so start there for anything important.</p></details>
+      <details><summary>How do I give feedback?</summary><p><a href="https://github.com/deployboat/deployboat/issues">Open an issue on GitHub</a>. Reports of anything confusing are especially welcome.</p></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>Deploy Boat · MIT License</span>
+  <span><a href="https://github.com/deployboat/deployboat">GitHub</a> · <a href="https://www.npmjs.com/package/deployboat">npm</a> · <a href="https://github.com/deployboat/deployboat/issues">Feedback</a></span>
+</footer>
+
+<script>
+  // Publish tabs
+  document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
+    document.querySelectorAll(".tab, .pane").forEach((e) => e.classList.remove("on"));
+    t.classList.add("on");
+    document.getElementById(t.dataset.t).classList.add("on");
+  }));
+
+  // Copy the install command
+  document.getElementById("copy").onclick = async (e) => {
+    try { await navigator.clipboard.writeText(document.getElementById("installcmd").textContent); e.target.textContent = "Copied"; }
+    catch { e.target.textContent = "Select & copy"; }
+    setTimeout(() => (e.target.textContent = "Copy"), 1600);
+  };
+
+  // Doctor demo: click a fix to see it resolved
+  document.querySelectorAll(".mrow button").forEach((b) => (b.onclick = () => {
+    b.textContent = "Fixing…"; b.disabled = true;
+    setTimeout(() => {
+      const row = b.closest(".mrow");
+      row.classList.add("done");
+      row.querySelector(".dot use").setAttribute("href", "#check");
+      b.remove();
+    }, 700);
+  }));
+</script>
+</body>
+</html>
