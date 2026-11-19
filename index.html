@@ -75,7 +75,7 @@
   @media (prefers-reduced-motion: reduce) { .shine, .shine::after { animation:none !important; } }
 
   .hero { padding:72px 0 24px; }
-  h1 { font-size:clamp(38px,6vw,56px); line-height:1.08; letter-spacing:-0.035em; font-weight:700; }
+  h1 { font-size:clamp(34px,5vw,48px); line-height:1.08; letter-spacing:-0.035em; font-weight:700; }
   .hero p.lede { font-size:20px; color:var(--muted); margin:20px 0 32px; max-width:600px; }
   .hero p.lede strong { color:var(--ink); font-weight:600; }
 
@@ -153,6 +153,36 @@
   .foot a { color:var(--muted); text-decoration:none; } .foot a:hover { color:var(--ink); }
   .foot-bottom { margin-top:48px; padding-top:20px; border-top:1px solid var(--line); font-size:14px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 
+
+
+  /* Hero picture: your server is one boat, and your apps are boxes loaded onto it. */
+  /* Title on the left, picture on the right. */
+  .hero-top { display:flex; align-items:center; gap:16px; }
+  .hero-top h1 { flex:1; }
+  .boatpic { width:150px; flex-shrink:0; }
+  .boatpic svg { width:100%; height:auto; display:block; }
+  .boatpic .line { fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .boatpic .sail { fill:var(--accent); }
+  .boatpic .hull { fill:var(--ink); }
+  .boatpic .box { fill:var(--card); stroke:var(--ink); stroke-width:1.5; }
+  .boatpic .name { font:600 9px Inter,sans-serif; fill:var(--ink); }
+  .boatpic .label { font:600 15px Inter,sans-serif; fill:var(--muted); }
+  .boatpic .water { fill:none; stroke:var(--accent); stroke-width:2; stroke-linecap:round; opacity:.55; }
+  /* The boat rocks gently. */
+  .boatpic .rock { animation:rock 3.2s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 100%; }
+  @keyframes rock { 0%,100% { transform:rotate(-2deg); } 50% { transform:rotate(2deg) translateY(2px); } }
+  /* Apps start above the boat and drop in when the script adds the "in" class. */
+  .boatpic .app { opacity:0; transform:translateY(-30px); transition:transform 1s ease-in, opacity 1s; }
+  .boatpic .app.in { opacity:1; transform:translateY(0); }
+  @keyframes blink { 50% { opacity:.25; } }
+
+  /* Terminal that types itself when you scroll to it (see the script at the bottom). */
+  pre.term [data-step] { visibility:hidden; }
+  pre.term.played [data-step] { visibility:visible; }
+  .cursor { display:inline-block; width:8px; height:1.1em; background:#d8d8d8; vertical-align:-2px; animation:blink 1s steps(1) infinite; }
+
+  @media (prefers-reduced-motion: reduce) { .boatpic *, .cursor { animation:none !important; transition:none !important; } }
+
   @media (max-width:760px) {
     body { font-size:16.5px; }
     .ways { grid-template-columns:1fr; }
@@ -161,6 +191,8 @@
     .foot { grid-template-columns:1fr 1fr; } .foot > div:first-child { grid-column:1 / -1; }
     header.top nav a.hide { display:none; }
     .hero { padding-top:40px; }
+    .hero-top { flex-direction:column; align-items:flex-start; gap:16px; }
+    .boatpic { width:150px; }
   }
 </style>
 </head>
@@ -181,7 +213,27 @@
   </header>
 
   <div class="hero">
-    <h1>Put your apps on your own server, without becoming a sysadmin.</h1>
+    <div class="hero-top">
+      <h1>Your apps, your server.<br>No sysadmin needed.</h1>
+      <!-- Drawn by hand in SVG: one boat (your server) and apps loading onto it. -->
+      <div class="boatpic" aria-hidden="true">
+        <svg viewBox="0 0 200 134">
+          <g class="rock">
+            <path class="line" d="M140 10 V82"/>
+            <path class="sail" d="M143 14 L180 74 H143 Z"/>
+            <g class="app"><rect class="box" x="22" y="62" width="30" height="20" rx="3"/><text class="name" x="37" y="75" text-anchor="middle">shop</text></g>
+            <g class="app"><rect class="box" x="56" y="62" width="30" height="20" rx="3"/><text class="name" x="71" y="75" text-anchor="middle">blog</text></g>
+            <g class="app"><rect class="box" x="90" y="62" width="30" height="20" rx="3"/><text class="name" x="105" y="75" text-anchor="middle">api</text></g>
+            <g class="app"><rect class="box" x="39" y="40" width="30" height="20" rx="3"/><text class="name" x="54" y="53" text-anchor="middle">docs</text></g>
+            <g class="app"><rect class="box" x="73" y="40" width="30" height="20" rx="3"/><text class="name" x="88" y="53" text-anchor="middle">chat</text></g>
+            <g class="app"><rect class="box" x="56" y="18" width="30" height="20" rx="3"/><text class="name" x="71" y="31" text-anchor="middle">crm</text></g>
+            <path class="hull" d="M8 84 H192 L176 104 H24 Z"/>
+          </g>
+          <path class="water" d="M0 108 q10 -5 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0"/>
+          <text class="label" x="100" y="130" text-anchor="middle">your $7 server</text>
+        </svg>
+      </div>
+    </div>
     <p class="lede">Deploy Boat turns a cheap VPS into your own little Heroku. Publish anything with <strong>one command</strong>, from <strong>Git</strong>, or by telling your <strong>AI agent</strong> to publish it.</p>
     <div class="install">
       <div class="bar"><span>Install on your server</span><button id="copy">Copy</button></div>
@@ -221,11 +273,11 @@
 </div>
 
 <div class="col" style="margin-top:36px">
-<pre class="term"><span class="d">~/shop</span> $ npx deployboat deploy --with database
-<span class="d">→ Uploading shop…</span>
-<span class="d">→ Building</span> (Next.js)
-<span class="d">→ Creating your database…</span>
-<span class="g">✓ Live:</span> <span class="b">https://shop.1.2.3.4.nip.io</span></pre>
+<pre class="term" id="deploy-demo"><span class="d">~/shop</span> $ <span data-type>npx deployboat deploy --with database</span>
+<span data-step><span class="d">→ Uploading shop…</span></span>
+<span data-step><span class="d">→ Building</span> (Next.js)</span>
+<span data-step><span class="d">→ Creating your database…</span></span>
+<span data-step><span class="g">✓ Live:</span> <span class="b">https://shop.1.2.3.4.nip.io</span></span></pre>
 </div>
 
 <div class="col">
@@ -401,6 +453,52 @@
       b.outerHTML = '<span class="ok">Fixed</span>';
     }, 700);
   }));
+
+  // Deploy demo: type the command, then show the output lines one by one.
+  // Runs once, the first time the terminal scrolls into view.
+  const demo = document.getElementById("deploy-demo");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (demo && "IntersectionObserver" in window && !reduceMotion) {
+    const typed = demo.querySelector("[data-type]");
+    const lines = demo.querySelectorAll("[data-step]");
+    const command = typed.textContent;
+    typed.textContent = "";
+    const cursor = document.createElement("span");
+    cursor.className = "cursor";
+    typed.after(cursor);
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    async function play() {
+      for (const letter of command) { typed.textContent += letter; await wait(35); }
+      cursor.remove();
+      for (const line of lines) { await wait(650); line.style.visibility = "visible"; }
+    }
+    new IntersectionObserver((entries, observer) => {
+      if (entries[0].isIntersecting) { observer.disconnect(); play(); }
+    }, { threshold: 0.6 }).observe(demo);
+  } else if (demo) {
+    demo.classList.add("played"); // no animation: just show everything
+  }
+
+  // Boat picture: load the apps onto the boat one by one, slowly.
+  // When all are on board, wait a moment, unload them all and start again.
+  const boatApps = document.querySelectorAll(".boatpic .app");
+  if (reduceMotion) {
+    boatApps.forEach((a) => a.classList.add("in")); // no animation: show them all
+  } else {
+    let next = 0;
+    setInterval(() => {
+      if (next < boatApps.length) {
+        boatApps[next].classList.add("in");
+        next++;
+      } else if (next === boatApps.length + 2) { // two empty ticks = a short pause
+        boatApps.forEach((a) => a.classList.remove("in"));
+        next = 0;
+      } else {
+        next++;
+      }
+    }, 1500);
+  }
 </script>
 </body>
 </html>
