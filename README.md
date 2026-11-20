@@ -25,10 +25,10 @@ and GitHub Pages publishes it within a minute or two.
 curl -fsSL deployboat.github.io/install.sh | sudo bash
 ```
 
-`install.sh` here is only a few lines: it downloads and runs
-[the real installer](https://github.com/deployboat/deployboat/blob/main/install.sh)
-from the main repo. So the short command always installs the latest version,
-and nothing here needs to change when the installer does.
+`install.sh` here is only a few lines: it downloads and runs the real installer
+attached to the [latest release](https://github.com/deployboat/deployboat/releases/latest)
+of the main repo (or the one on `main`, with `--edge`). So the short command always
+installs the latest release, and nothing here needs to change when the installer does.
 
 Please don't move or rename this file. The README, the site and people's notes all
 point to it.
